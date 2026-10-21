@@ -1,0 +1,50 @@
+
+{% extends "base.html" %}
+
+{% block title %}Create account | Venga{% endblock %}
+
+{% block content %}
+<h1>Create account</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <p>
+        {{ form.username.label }}
+        {{ form.username(autocomplete="username") }}
+        {% for error in form.username.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{ form.display_name.label }}
+        {{ form.display_name(autocomplete="name") }}
+        {% for error in form.display_name.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{ form.password.label }}
+        {{ form.password(autocomplete="new-password") }}
+        {% for error in form.password.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{ form.confirm_password.label }}
+        {{ form.confirm_password(autocomplete="new-password") }}
+        {% for error in form.confirm_password.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    {{ form.submit() }}
+</form>
+
+<p>Already have an account?
+    <a href="{{ url_for('auth.login') }}">Log in</a>
+</p>
+{% endblock %}

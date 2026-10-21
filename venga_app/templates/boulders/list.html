@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Boulders</h1>
+
+<div class="boulder-list">
+    {% for boulder in boulders %}
+        <a
+            class="boulder-card"
+            href="{{ url_for(
+                'main.boulder_detail',
+                boulder_id=boulder.id
+            ) }}"
+        >
+            <h2>{{ boulder.name }}</h2>
+            <p>Grade: {{ boulder.grade }}</p>
+            <p>Color: {{ boulder.color }}</p>
+            <p>Setter: {{ boulder.setter }}</p>
+        </a>
+    {% else %}
+        <p>No active boulders at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

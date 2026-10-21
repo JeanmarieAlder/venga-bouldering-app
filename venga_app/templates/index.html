@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Venga | Bouldering{% endblock %}
+
+{% block content %}
+<h1>Welcome to Venga</h1>
+
+{% if current_user.is_authenticated %}
+    <p>You're logged in as {{ current_user.display_name }}.</p>
+
+    {% if current_user.can_set_boulders %}
+        <p>You have setter permissions.</p>
+    {% else %}
+        <p>You can track the boulders you've climbed.</p>
+    {% endif %}
+{% else %}
+    <p>Log in to track your climbing progress.</p>
+{% endif %}
+{% endblock %}

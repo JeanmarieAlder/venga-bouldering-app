@@ -1,0 +1,39 @@
+
+{% extends "base.html" %}
+
+{% block title %}Log in | Venga{% endblock %}
+
+{% block content %}
+<h1>Log in</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <p>
+        {{ form.username.label }}
+        {{ form.username(autocomplete="username") }}
+        {% for error in form.username.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{ form.password.label }}
+        {{ form.password(autocomplete="current-password") }}
+        {% for error in form.password.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </p>
+
+    <p>
+        {{ form.remember_me() }}
+        {{ form.remember_me.label }}
+    </p>
+
+    {{ form.submit() }}
+</form>
+
+<p>New to Venga?
+    <a href="{{ url_for('auth.register') }}">Create an account</a>
+</p>
+{% endblock %}

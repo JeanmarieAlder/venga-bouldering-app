@@ -1,0 +1,55 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit boulder</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div>
+        {{ form.name.label }}
+        {{ form.name() }}
+
+        {% for error in form.name.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.grade.label }}
+        {{ form.grade() }}
+
+        {% for error in form.grade.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.color.label }}
+        {{ form.color() }}
+
+        {% for error in form.color.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.setter.label }}
+        {{ form.setter() }}
+
+        {% for error in form.setter.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    {{ form.submit() }}
+
+    <a href="{{ url_for(
+        'main.boulder_detail',
+        boulder_id=boulder.id
+    ) }}">
+        Cancel
+    </a>
+</form>
+{% endblock %}

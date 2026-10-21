@@ -1,0 +1,25 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{{ url_for('main.boulder_list') }}">
+    &larr; Back to boulders
+</a>
+
+<h1>{{ boulder.name }}</h1>
+
+<p><strong>Grade:</strong> {{ boulder.grade }}</p>
+<p><strong>Color:</strong> {{ boulder.color }}</p>
+<p><strong>Setter:</strong> {{ boulder.setter }}</p>
+
+{% if current_user.can_set_boulders %}
+    <div class="boulder-actions">
+        <a href="{{ url_for(
+            'main.edit_boulder',
+            boulder_id=boulder.id
+        ) }}">
+            Edit boulder
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -4,7 +4,7 @@
 {% block content %}
 <h1>Edit boulder</h1>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
 
     <div>
@@ -61,6 +61,15 @@
         {{ form.setter() }}
 
         {% for error in form.setter.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.photo.label }}
+        {{ form.photo(accept="image/jpeg,image/png,image/webp") }}
+
+        {% for error in form.photo.errors %}
             <p class="error">{{ error }}</p>
         {% endfor %}
     </div>

@@ -1,52 +1,93 @@
 {% extends "base.html" %}
 
+{% block title %}Boulders | Venga{% endblock %}
+
 {% block content %}
-<h1>Boulders</h1>
+<div class="container py-4">
 
-<div class="boulder-list">
-    {% if current_user.can_set_boulders %}
-        <a href="{{ url_for('main.create_boulder') }}">
-            + Add a boulder
-        </a>
-    {% endif %}
-    {% for boulder in boulders %}
-        <a
-            class="boulder-card"
-            href="{{ url_for(
-                'main.boulder_detail',
-                boulder_id=boulder.id
-            ) }}"
-        >
-            <h2>{{ boulder.name }}</h2>
-            <p>Grade: {{ boulder.grade }}</p>
-            <p>
-                Color:
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <h1 class="mb-0">Boulders</h1>
 
-                {{ boulder.color }}
+        {% if current_user.can_set_boulders %}
+            <a
+                href="{{ url_for('main.create_boulder') }}"
+                class="btn btn-success"
+            >
+                + Add a boulder
+            </a>
+        {% endif %}
+    </div>
 
-                {% set color_classes = {
-                    "Red": "hold-red",
-                    "Blue": "hold-blue",
-                    "Yellow": "hold-yellow",
-                    "Green": "hold-green",
-                    "Orange": "hold-orange",
-                    "Purple": "hold-purple",
-                    "Pink": "hold-pink",
-                    "Black": "hold-black"
-                } %}
+    {% set color_classes = {
+        "Red": "hold-red",
+        "Blue": "hold-blue",
+        "Yellow": "hold-yellow",
+        "Green": "hold-green",
+        "Orange": "hold-orange",
+        "Purple": "hold-purple",
+        "Pink": "hold-pink",
+        "Black": "hold-black"
+    } %}
 
-                {% if boulder.color in color_classes %}
-                    <span
-                        class="hold-color {{ color_classes[boulder.color] }}"
-                        aria-hidden="true"
-                    ></span>
-                {% endif %}
-                
-            </p>
-            <p>Setter: {{ boulder.setter }}</p>
-        </a>
+    {% if boulders %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Boulder</th>
+                        <th scope="col">Grade</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Setter</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for boulder in boulders %}
+                    <tr>
+                        <td>
+                            <a
+                                href="{{ url_for(
+                                    'main.boulder_detail',
+                                    boulder_id=boulder.id
+                                ) }}"
+                                class="fw-semibold text-decoration-none"
+                            >
+                                {{ boulder.name }}
+                            </a>
+                        </td>
+
+                        <td>
+                            <span class="badge text-bg-secondary">
+                                {{ boulder.grade }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="d-inline-flex align-items-center gap-2">
+                                {% if boulder.color in color_classes %}
+                                    <span
+                                        class="hold-color {{ color_classes[boulder.color] }}"
+                                        aria-hidden="true"
+                                    ></span>
+                                {% endif %}
+                                {{ boulder.color }}
+                            </span>
+                        </td>
+
+                        <td>{{ boulder.setter }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <p>No active boulders at the moment.</p>
-    {% endfor %}
+        <div class="alert alert-light border text-center py-4" role="status">
+            <h2 class="h5">No active boulders</h2>
+            <p class="mb-0">
+                There are no active boulders at the moment.
+            </p>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}

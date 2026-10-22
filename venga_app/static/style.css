@@ -20,6 +20,17 @@
     vertical-align: middle;
 }
 
+.boulder-photo {
+    display: block;
+    width: 100%;
+    max-width: 800px;
+    max-height: 70vh;
+    object-fit: contain;
+    object-position: left center;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
 .hold-red    { background-color: #e53935; }
 .hold-blue   { background-color: #1e88e5; }
 .hold-yellow { background-color: #fdd835; }
@@ -28,3 +39,208 @@
 .hold-purple { background-color: #8e24aa; }
 .hold-pink   { background-color: #ec407a; }
 .hold-black  { background-color: #292929; }
+
+
+/*Bootstrap styles*/
+body {
+    background-color: #f5f6f8;
+    color: #212529;
+}
+
+/* Main page content */
+main.container {
+    max-width: 1100px;
+}
+
+/* Consistent form controls */
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+select,
+textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    background-color: #fff;
+}
+
+/* Buttons and button-like links */
+button,
+input[type="submit"],
+a.button {
+    display: inline-block;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #0d6efd;
+    border-radius: 0.375rem;
+    background-color: #0d6efd;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button:hover,
+input[type="submit"]:hover,
+a.button:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+/* Links */
+a {
+    text-underline-offset: 3px;
+}
+
+/* Boulder photos */
+.boulder-photo {
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+}
+
+/* Validation errors */
+.error {
+    color: #b02a37;
+    font-size: 0.9rem;
+}
+
+
+/* Make form buttons visible and consistent */
+form button,
+form input[type="submit"],
+form input[type="button"],
+form input[type="reset"] {
+    display: inline-block;
+    padding: 0.55rem 1rem;
+    background-color: #198754;
+    color: #000000;
+    border: 1px solid #198754;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Hover state */
+form button:hover,
+form input[type="submit"]:hover,
+form input[type="button"]:hover,
+form input[type="reset"]:hover {
+    background-color: #146c43;
+    border-color: #13653f;
+    color: #000000;
+}
+
+/* Keyboard focus */
+form button:focus-visible,
+form input[type="submit"]:focus-visible,
+form input[type="button"]:focus-visible,
+form input[type="reset"]:focus-visible {
+    outline: 3px solid rgba(25, 135, 84, 0.35);
+    outline-offset: 2px;
+}
+
+/* Disabled buttons */
+form button:disabled,
+form input[type="submit"]:disabled,
+form input[type="button"]:disabled,
+form input[type="reset"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* Venga flash alerts */
+.venga-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 3rem 1rem 1rem;
+    margin-bottom: 0.85rem;
+    border: 1px solid transparent;
+    border-left: 5px solid currentColor;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    animation: venga-alert-enter 0.3s ease-out;
+}
+
+.venga-alert-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 2rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.venga-alert-message {
+    flex: 1;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.venga-alert .btn-close {
+    position: absolute;
+    top: 50%;
+    right: 0.85rem;
+    transform: translateY(-50%);
+}
+
+@keyframes venga-alert-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .venga-alert {
+        animation: none;
+    }
+}
+
+
+/* Keep the alert close button vertically centered */
+.venga-alert {
+    position: relative;
+}
+
+.venga-alert .btn-close {
+    top: 50%;
+    right: 0.85rem;
+    transform: translateY(-50%);
+    padding: 0.5rem;
+    margin: 0;
+    background-color: transparent;
+    box-shadow: none;
+    opacity: 0.65;
+}
+
+/* No blue background on hover */
+.venga-alert .btn-close:hover {
+    background-color: transparent;
+    opacity: 1;
+}
+
+/* Remove Bootstrap's colored focus glow */
+.venga-alert .btn-close:focus {
+    box-shadow: none;
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    opacity: 1;
+}
+
+/* Keep keyboard focus visible */
+.venga-alert .btn-close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}

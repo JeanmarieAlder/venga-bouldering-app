@@ -12,6 +12,7 @@ from flask_login import current_user, login_required
 
 from venga_app.boulder_store import get_all, get_by_id, save_all
 from venga_app.permissions import setter_required
+from venga_app.image_store import save_boulder_photo
 
 from . import main_bp
 from .forms import BoulderEditForm
@@ -69,6 +70,17 @@ def edit_boulder(boulder_id):
     form = BoulderEditForm()
 
     if form.validate_on_submit():
+        if form.photo.data:
+            try:
+                boulder["photo"] = save_boulder_photo(form.photo.data)
+            except ValueError as error:
+                form.photo.errors.append(str(error))
+                return render_template(
+                    "boulders/edit.html",
+                    form=form,
+                    boulder=boulder,
+                )
+            
         boulder.update({
             "name": form.name.data,
             "grade": form.grade.data,
@@ -114,6 +126,26 @@ def create_boulder():
         form.setter.data = current_user.display_name
 
     if form.validate_on_submit():
+
+        # Picture validation
+        if form.validate_on_submit():
+            if not form.photo.data:
+                form.photo.errors.append("Please select a photo.")
+                return render_template(
+                    "boulders/create.html",
+                    form=form,
+                )
+
+            try:
+                photo_path = save_boulder_photo(form.photo.data)
+            except ValueError as error:
+                form.photo.errors.append(str(error))
+                return render_template(
+                    "boulders/create.html",
+                    form=form,
+                )
+
+            
         now = datetime.now(timezone.utc).isoformat()
 
         boulder = {
@@ -122,6 +154,7 @@ def create_boulder():
             "grade": form.grade.data,
             "color": form.color.data,
             "setter": form.setter.data,
+            "photo": photo_path,
             "created_at": now,
             "active": True,
             "archived_at": None,

@@ -1,5 +1,6 @@
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length
 
@@ -53,5 +54,7 @@ class BoulderEditForm(FlaskForm):
         filters=[lambda value: value.strip() if isinstance(value, str) else value],
         validators=[DataRequired(), Length(max=80)],
     )
+
+    photo = FileField("Boulder photo")
 
     submit = SubmitField("Save changes")

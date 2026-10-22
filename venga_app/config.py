@@ -8,6 +8,9 @@ class Config:
     
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
+    # Max upload file size
+    MAX_CONTENT_LENGTH = os.getenv("MAX_CONTENT_LENGTH", 10 * 1024 * 1024 ) # defaults to 10 MB
+
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_SECURE = (

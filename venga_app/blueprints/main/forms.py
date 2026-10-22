@@ -1,7 +1,32 @@
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length
+
+
+GRADE_CHOICES = [
+    (grade, grade)
+    for grade in [
+        "4", "4+",
+        "5", "5+",
+        "6A", "6A+", "6B", "6B+", "6C", "6C+",
+        "7A", "7A+", "7B", "7B+", "7C", "7C+",
+        "8A", "8A+", "8B", "8B+", "8C", "8C+",
+        "9A",
+    ]
+]
+
+# Keep this list short and easy to scan.
+COLOR_CHOICES = [
+    ("Red", "Red"),
+    ("Blue", "Blue"),
+    ("Yellow", "Yellow"),
+    ("Green", "Green"),
+    ("Orange", "Orange"),
+    ("Purple", "Purple"),
+    ("Pink", "Pink"),
+    ("Black", "Black"),
+]
 
 
 class BoulderEditForm(FlaskForm):
@@ -11,16 +36,16 @@ class BoulderEditForm(FlaskForm):
         validators=[DataRequired(), Length(max=100)],
     )
 
-    grade = StringField(
+    grade = SelectField(
         "Grade",
-        filters=[lambda value: value.strip() if isinstance(value, str) else value],
-        validators=[DataRequired(), Length(max=20)],
+        choices=GRADE_CHOICES,
+        validators=[DataRequired()],
     )
 
-    color = StringField(
-        "Color",
-        filters=[lambda value: value.strip() if isinstance(value, str) else value],
-        validators=[DataRequired(), Length(max=50)],
+    color = SelectField(
+        "Hold color",
+        choices=COLOR_CHOICES,
+        validators=[DataRequired()],
     )
 
     setter = StringField(

@@ -4,7 +4,7 @@
 
 Venga App is a web application built with Flask to help bouldering gyms manage their boulders, setters, and climbers.
 
-> **Project status:** In development. Features and setup instructions may change.
+> **Project status:** In development. Features and setup instructions may change and are not completely done!
 
 ## Features
 
@@ -26,7 +26,7 @@ Venga App is a web application built with Flask to help bouldering gyms manage t
 
 ### Prerequisites
 
-- Python 3.10 or later
+- Python 3.13 or later
 - Git.
 
 ### 1. Clone the repository

@@ -1,0 +1,30 @@
+
+.color-swatch {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    border: 1px solid #777;
+    border-radius: 50%;
+}
+
+/* Boulder hold colors */
+.hold-color {
+    display: inline-block;
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 50%;
+    border: 1px solid #777;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+
+.hold-red    { background-color: #e53935; }
+.hold-blue   { background-color: #1e88e5; }
+.hold-yellow { background-color: #fdd835; }
+.hold-green  { background-color: #43a047; }
+.hold-orange { background-color: #fb8c00; }
+.hold-purple { background-color: #8e24aa; }
+.hold-pink   { background-color: #ec407a; }
+.hold-black  { background-color: #292929; }

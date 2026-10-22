@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timezone
 
 from flask import (
@@ -7,7 +8,7 @@ from flask import (
     render_template,
     url_for,
 )
-from flask_login import login_required
+from flask_login import current_user, login_required
 
 from venga_app.boulder_store import get_all, get_by_id, save_all
 from venga_app.permissions import setter_required
@@ -100,5 +101,46 @@ def edit_boulder(boulder_id):
     return render_template(
         "boulders/edit.html",
         boulder=boulder,
+        form=form,
+    )
+
+
+@main_bp.route("/boulders/new", methods=["GET", "POST"])
+@setter_required
+def create_boulder():
+    form = BoulderEditForm()
+
+    if not form.is_submitted():
+        form.setter.data = current_user.display_name
+
+    if form.validate_on_submit():
+        now = datetime.now(timezone.utc).isoformat()
+
+        boulder = {
+            "id": str(uuid.uuid4()),
+            "name": form.name.data,
+            "grade": form.grade.data,
+            "color": form.color.data,
+            "setter": form.setter.data,
+            "created_at": now,
+            "active": True,
+            "archived_at": None,
+        }
+
+        boulders = get_all()
+        boulders.append(boulder)
+        save_all(boulders)
+
+        flash("Boulder created successfully.", "success")
+
+        return redirect(
+            url_for(
+                "main.boulder_detail",
+                boulder_id=boulder["id"],
+            )
+        )
+
+    return render_template(
+        "boulders/create.html",
         form=form,
     )

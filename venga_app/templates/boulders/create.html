@@ -1,0 +1,76 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add a boulder</h1>
+
+<p>Enter the details of the new boulder below.</p>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div>
+        {{ form.name.label }}
+        {{ form.name(placeholder="e.g. The Blue Corner") }}
+
+        {% for error in form.name.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.grade.label }}
+        {{ form.grade(placeholder="e.g. 6A+") }}
+
+        {% for error in form.grade.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.color.label }}
+        {{ form.color(id="boulder-color") }}
+
+        <span
+            id="color-preview"
+            class="color-swatch"
+            aria-label="Selected hold color"
+        ></span>
+
+        {% for error in form.color.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("boulder-color");
+        const preview = document.getElementById("color-preview");
+
+        if (!select || !preview) return;
+
+        function updatePreview() {
+            preview.style.backgroundColor = select.value;
+        }
+
+        select.addEventListener("change", updatePreview);
+        updatePreview();
+    });
+    </script>
+
+    <div>
+        {{ form.setter.label }}
+        {{ form.setter() }}
+
+        {% for error in form.setter.errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    {{ form.submit() }}
+
+    <a href="{{ url_for('main.boulder_list') }}">
+        Cancel
+    </a>
+</form>
+{% endblock %}

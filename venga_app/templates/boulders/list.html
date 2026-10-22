@@ -4,6 +4,11 @@
 <h1>Boulders</h1>
 
 <div class="boulder-list">
+    {% if current_user.can_set_boulders %}
+        <a href="{{ url_for('main.create_boulder') }}">
+            + Add a boulder
+        </a>
+    {% endif %}
     {% for boulder in boulders %}
         <a
             class="boulder-card"
@@ -14,7 +19,30 @@
         >
             <h2>{{ boulder.name }}</h2>
             <p>Grade: {{ boulder.grade }}</p>
-            <p>Color: {{ boulder.color }}</p>
+            <p>
+                Color:
+
+                {{ boulder.color }}
+
+                {% set color_classes = {
+                    "Red": "hold-red",
+                    "Blue": "hold-blue",
+                    "Yellow": "hold-yellow",
+                    "Green": "hold-green",
+                    "Orange": "hold-orange",
+                    "Purple": "hold-purple",
+                    "Pink": "hold-pink",
+                    "Black": "hold-black"
+                } %}
+
+                {% if boulder.color in color_classes %}
+                    <span
+                        class="hold-color {{ color_classes[boulder.color] }}"
+                        aria-hidden="true"
+                    ></span>
+                {% endif %}
+                
+            </p>
             <p>Setter: {{ boulder.setter }}</p>
         </a>
     {% else %}

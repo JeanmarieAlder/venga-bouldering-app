@@ -27,12 +27,34 @@
 
     <div>
         {{ form.color.label }}
-        {{ form.color() }}
+        {{ form.color(id="boulder-color") }}
+
+        <span
+            id="color-preview"
+            class="color-swatch"
+            aria-label="Selected hold color"
+        ></span>
 
         {% for error in form.color.errors %}
             <p class="error">{{ error }}</p>
         {% endfor %}
     </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("boulder-color");
+        const preview = document.getElementById("color-preview");
+
+        if (!select || !preview) return;
+
+        function updatePreview() {
+            preview.style.backgroundColor = select.value;
+        }
+
+        select.addEventListener("change", updatePreview);
+        updatePreview();
+    });
+    </script>
 
     <div>
         {{ form.setter.label }}

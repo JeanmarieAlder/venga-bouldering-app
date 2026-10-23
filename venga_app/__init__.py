@@ -32,4 +32,7 @@ def create_app():
     from venga_app.blueprints.admin import admin_bp
     app.register_blueprint(admin_bp)
 
+    from venga_app.blueprints.logbook import logbook_bp
+    app.register_blueprint(logbook_bp)
+
     return app

@@ -15,6 +15,7 @@ from flask_login import current_user, login_required
 from venga_app.boulder_store import get_all, get_by_id, save_all
 from venga_app.permissions import setter_required
 from venga_app.image_store import save_boulder_photo
+from venga_app.ascent_store import get_for_user_and_boulder
 
 from . import main_bp
 from .forms import BoulderEditForm
@@ -47,9 +48,21 @@ def boulder_detail(boulder_id):
     if not boulder or not boulder.get("active", True):
         abort(404)
 
+    # to log ascents
+    has_logged_ascent = False
+    if current_user.is_authenticated:
+        has_logged_ascent = (
+            get_for_user_and_boulder(
+                current_user.get_id(),
+                boulder_id,
+            )
+            is not None
+        )
+
     return render_template(
         "boulders/detail.html",
         boulder=boulder,
+        has_logged_ascent=has_logged_ascent,
     )
 
 

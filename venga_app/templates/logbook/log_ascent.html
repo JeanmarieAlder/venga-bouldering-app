@@ -1,0 +1,85 @@
+ {% extends "base.html" %}
+
+{% block title %}Log ascent · {{ boulder.name }} · Venga{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 640px;">
+    <a href="{{ url_for('main.boulder_detail', boulder_id=boulder.id) }}"
+       class="btn btn-outline-secondary btn-sm mb-3">
+        ← Back to boulder
+    </a>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h3 fw-bold mb-1">
+                {{ "Edit ascent" if existing else "Log ascent" }}
+            </h1>
+            <p class="text-secondary mb-4">
+                {{ boulder.name }} · Official grade: {{ boulder.grade }}
+            </p>
+
+            <form method="POST"
+                  action="{{ url_for('logbook.log_ascent', boulder_id=boulder.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="mb-4">
+                    <label for="tries" class="form-label fw-semibold">
+                        Number of tries
+                    </label>
+                    <input
+                        type="number"
+                        id="tries"
+                        name="tries"
+                        class="form-control {% if errors.get('tries') %}is-invalid{% endif %}"
+                        min="1"
+                        max="10000"
+                        step="1"
+                        required
+                        value="{{ tries_value }}"
+                    >
+                    <div class="form-text">
+                        Include the attempts you made before sending the boulder.
+                    </div>
+                    {% if errors.get('tries') %}
+                        <div class="invalid-feedback">
+                            {{ errors.tries }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label for="personal_grade" class="form-label fw-semibold">
+                        Your grade
+                    </label>
+                    <select
+                        id="personal_grade"
+                        name="personal_grade"
+                        class="form-select {% if errors.get('personal_grade') %}is-invalid{% endif %}"
+                        required
+                    >
+                        <option value="">Choose your grade</option>
+                        {% for value, label in grade_choices %}
+                            <option value="{{ value }}"
+                                {% if personal_grade == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">
+                        Your personal opinion. This does not change the official grade.
+                    </div>
+                    {% if errors.get('personal_grade') %}
+                        <div class="invalid-feedback">
+                            {{ errors.personal_grade }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    {{ "Save changes" if existing else "Add to my logbook" }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

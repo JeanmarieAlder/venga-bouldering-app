@@ -143,6 +143,20 @@
                     {% endif %}
                 </div>
             {% endif %}
+            <a
+                href="{{ url_for('logbook.log_ascent', boulder_id=boulder.id) }}"
+                class="btn btn-success"
+            >
+                {% if current_user.is_authenticated %}
+                    {% if has_logged_ascent %}
+                        Edit my ascent
+                    {% else %}
+                        Log ascent
+                    {% endif %}
+                {% else %}
+                    Log ascent
+                {% endif %}
+            </a>
 
         </div>
     </div>

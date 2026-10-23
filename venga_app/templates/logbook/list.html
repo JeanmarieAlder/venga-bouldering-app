@@ -1,0 +1,89 @@
+ {% extends "base.html" %}
+
+{% block title %}My logbook · Venga{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h2 fw-bold mb-1">My logbook</h1>
+            <p class="text-secondary mb-0">
+                Track your sends and how each boulder feels to you.
+            </p>
+        </div>
+        <span class="badge text-bg-success fs-6">
+            {{ entries|length }} boulders sent
+        </span>
+    </div>
+
+    {% if entries %}
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Boulder</th>
+                            <th scope="col">Official</th>
+                            <th scope="col">Your grade</th>
+                            <th scope="col">Tries</th>
+                            <th scope="col">Date logged</th>
+                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries %}
+                            <tr>
+                                <td>
+                                    <a class="fw-semibold text-decoration-none"
+                                       href="{{ url_for('main.boulder_detail', boulder_id=entry.boulder.id) }}">
+                                        {{ entry.boulder.name }}
+                                    </a>
+                                </td>
+                                <td>{{ entry.boulder.grade }}</td>
+                                <td>
+                                    <span class="badge text-bg-success">
+                                        {{ entry.personal_grade }}
+                                    </span>
+                                </td>
+                                <td>{{ entry.tries }}</td>
+                                <td>
+                                    {% if entry.completed_at %}
+                                        {{ entry.completed_at[:10] }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a class="btn btn-outline-secondary btn-sm"
+                                       href="{{ url_for('logbook.log_ascent', boulder_id=entry.boulder.id) }}">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5 px-3">
+                <div class="mb-3">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success"
+                          style="width: 64px; height: 64px;">
+                        <span style="font-size: 1.8rem;">✓</span>
+                    </span>
+                </div>
+                <h2 class="h4 fw-bold">Your logbook starts here</h2>
+                <p class="text-secondary mb-4">
+                    When you send a boulder, log your tries and personal grade here.
+                </p>
+                <a href="{{ url_for('main.boulder_list') }}"
+                   class="btn btn-success">
+                    Browse boulders
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

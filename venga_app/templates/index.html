@@ -1,19 +1,386 @@
+
 {% extends "base.html" %}
 
-{% block title %}Venga | Bouldering{% endblock %}
+{% block title %}Venga | Your climbing dashboard{% endblock %}
 
 {% block content %}
-<h1>Welcome to Venga</h1>
+<div class="container py-4 py-md-5">
 
-{% if current_user.is_authenticated %}
-    <p>You're logged in as {{ current_user.display_name }}.</p>
+    <!-- Welcome section -->
+    <div class="p-4 p-md-5 mb-4 rounded-4 bg-success text-white shadow-sm">
+        <p class="text-uppercase fw-semibold small mb-2">
+            Your climbing journey
+        </p>
 
-    {% if current_user.can_set_boulders %}
-        <p>You have setter permissions.</p>
+        <h1 class="display-5 fw-bold mb-3">
+            {% if current_user.is_authenticated %}
+                Keep climbing, {{ current_user.display_name }}!
+            {% else %}
+                Find your next send.
+            {% endif %}
+        </h1>
+
+        <p class="lead mb-4">
+            Track your sends, challenge yourself, and see your progress
+            one boulder at a time.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('main.boulder_list') }}"
+               class="btn btn-light btn-lg">
+                Explore boulders
+            </a>
+
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logbook.logbook') }}"
+                   class="btn btn-outline-light btn-lg">
+                    My logbook
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}"
+                   class="btn btn-outline-light btn-lg">
+                    Log in
+                </a>
+                <a href="{{ url_for('auth.register') }}"
+                   class="btn btn-outline-light btn-lg">
+                    Create account
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if current_user.is_authenticated %}
+
+        <!-- Personal statistics -->
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <h2 class="h4 fw-bold mb-1">Your progress</h2>
+                <p class="text-secondary mb-0">
+                    A snapshot of your climbing achievements.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-5">
+
+            <div class="col-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-3 p-md-4">
+                        <div class="text-secondary small mb-2">
+                            Boulders sent
+                        </div>
+                        <div class="display-6 fw-bold text-success">
+                            {{ stats.total_sent }}
+                        </div>
+                        <div class="small text-secondary mt-2">
+                            Unique sends logged
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-3 p-md-4">
+                        <div class="text-secondary small mb-2">
+                            Best official grade
+                        </div>
+                        <div class="display-6 fw-bold">
+                            {{ stats.best_grade or "—" }}
+                        </div>
+                        <div class="small text-secondary mt-2">
+                            Hardest setter-assigned grade you've sent
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-3 p-md-4">
+                        <div class="text-secondary small mb-2">
+                            Total tries
+                        </div>
+                        <div class="display-6 fw-bold">
+                            {{ stats.total_tries }}
+                        </div>
+                        <div class="small text-secondary mt-2">
+                            Across logged sends
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-3 p-md-4">
+                        <div class="text-secondary small mb-2">
+                            Average tries
+                        </div>
+                        <div class="display-6 fw-bold">
+                            {% if stats.average_tries is not none %}
+                                {{ stats.average_tries }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+                        <div class="small text-secondary mt-2">
+                            Per logged send
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Successful sends by official grade -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+                <h2 class="h5 fw-bold mb-1">
+                    Sends by official grade
+                </h2>
+                <p class="text-secondary small mb-4">
+                    Number of unique boulders you've sent at each setter-assigned grade.
+                </p>
+
+                {% if stats.grade_chart_labels %}
+                    <div style="position: relative; height: 300px;">
+                        <canvas
+                            id="gradeChart"
+                            role="img"
+                            aria-label="Bar chart showing the number of boulders sent at each official grade."
+                        ></canvas>
+                    </div>
+                {% else %}
+                    <p class="text-secondary mb-0">
+                        Log your first ascent to see your grade distribution here.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent sends -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h2 class="h4 fw-bold mb-1">Recent sends</h2>
+                <p class="text-secondary mb-0">
+                    Your latest logged boulders.
+                </p>
+            </div>
+
+            <a href="{{ url_for('logbook.logbook') }}"
+               class="btn btn-outline-success btn-sm">
+                View logbook
+            </a>
+        </div>
+
+        {% if stats.recent_sends %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Boulder</th>
+                                <th scope="col">Your grade</th>
+                                <th scope="col">Tries</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for entry in stats.recent_sends %}
+                                <tr>
+                                    <td>
+                                        <a
+                                            href="{{ url_for(
+                                                'main.boulder_detail',
+                                                boulder_id=entry.boulder.id
+                                            ) }}"
+                                            class="fw-semibold text-decoration-none"
+                                        >
+                                            {{ entry.boulder.name }}
+                                        </a>
+                                        <div class="small text-secondary">
+                                            Official grade:
+                                            {{ entry.boulder.grade }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge text-bg-success">
+                                            {{ entry.personal_grade }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.tries }}
+                                        {{ "try" if entry.tries == 1 else "tries" }}
+                                    </td>
+
+                                    <td class="text-secondary small">
+                                        {{ entry.completed_at[:10]
+                                           if entry.completed_at else "—" }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center py-5">
+                    <div class="display-5 mb-3" aria-hidden="true">
+                        🧗
+                    </div>
+                    <h3 class="h5 fw-bold">
+                        Your first send is waiting
+                    </h3>
+                    <p class="text-secondary mb-4">
+                        Browse the available boulders and log your first
+                        successful ascent to start building your stats.
+                    </p>
+                    <a href="{{ url_for('main.boulder_list') }}"
+                       class="btn btn-success">
+                        Find a boulder
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if current_user.can_set_boulders %}
+            <div class="alert alert-light border d-flex flex-wrap
+                        justify-content-between align-items-center gap-3">
+                <div>
+                    <strong>Setter tools</strong>
+                    <div class="small text-secondary">
+                        Manage boulders and keep the wall up to date.
+                    </div>
+                </div>
+                <a href="{{ url_for('main.create_boulder') }}"
+                   class="btn btn-outline-success">
+                    Add a boulder
+                </a>
+            </div>
+        {% endif %}
+
     {% else %}
-        <p>You can track the boulders you've climbed.</p>
+
+        <!-- Logged-out welcome -->
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold">Track your sends</h2>
+                        <p class="text-secondary mb-0">
+                            Keep a personal record of completed boulders,
+                            tries, and grades.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold">See your progress</h2>
+                        <p class="text-secondary mb-0">
+                            Build your logbook and discover how your
+                            climbing develops.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold">Find your next challenge</h2>
+                        <p class="text-secondary mb-0">
+                            Explore the available routes and pick your
+                            next project.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     {% endif %}
-{% else %}
-    <p>Log in to track your climbing progress.</p>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if stats.grade_chart_labels %}
+<script>
+    const gradeLabels = {{ stats.grade_chart_labels | tojson }};
+    const gradeCounts = {{ stats.grade_chart_counts | tojson }};
+
+    const chartCanvas = document.getElementById("gradeChart");
+
+    if (chartCanvas) {
+        new Chart(chartCanvas, {
+            type: "bar",
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: "Boulders sent",
+                    data: gradeCounts,
+                    backgroundColor: "#198754",
+                    borderRadius: 6,
+                    maxBarThickness: 48
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const count = context.parsed.y;
+                                return count + (
+                                    count === 1
+                                        ? " boulder sent"
+                                        : " boulders sent"
+                                );
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Official grade"
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            stepSize: 1
+                        },
+                        title: {
+                            display: true,
+                            text: "Boulders sent"
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
 {% endif %}
 {% endblock %}

@@ -15,24 +15,126 @@ from flask_login import current_user, login_required
 from venga_app.boulder_store import get_all, get_by_id, save_all
 from venga_app.permissions import setter_required
 from venga_app.image_store import save_boulder_photo
-from venga_app.ascent_store import get_for_user_and_boulder
+from venga_app.ascent_store import get_for_user_and_boulder, get_for_user
 
 from . import main_bp
 from .forms import BoulderEditForm
 
 
+
 @main_bp.route("/")
 def index():
-    return render_template("index.html")
+    stats = {
+        "total_sent": 0,
+        "total_tries": 0,
+        "best_grade": None,
+        "average_tries": None,
+        "recent_sends": [],
+        "grade_chart_labels": [],
+        "grade_chart_counts": [],
+    }
+
+    if current_user.is_authenticated:
+        ascents = get_for_user(current_user.get_id())
+        boulders = get_all()
+
+        boulders_by_id = {
+            str(boulder["id"]): boulder
+            for boulder in boulders
+        }
+
+        # Only count ascents whose boulder still exists.
+        entries = []
+        for ascent in ascents:
+            boulder = boulders_by_id.get(
+                str(ascent.get("boulder_id"))
+            )
+
+            if boulder is not None:
+                entries.append({
+                    **ascent,
+                    "boulder": boulder,
+                })
+
+        # Use the same ordered grade choices as the boulder form.
+        grade_choices = BoulderEditForm().grade.choices
+        grade_order = {
+            str(value): index
+            for index, (value, _label) in enumerate(grade_choices)
+        }
+
+        # Count successful boulders by official grade.
+        grade_counts = {grade: 0 for grade in grade_order}
+
+        for entry in entries:
+            official_grade = entry["boulder"].get("grade")
+
+            if official_grade in grade_counts:
+                grade_counts[official_grade] += 1
+
+        # Keep the grades in the order defined by BoulderEditForm.
+        grade_chart_labels = [
+            grade for grade in grade_order
+            if grade_counts[grade] > 0
+        ]
+
+        grade_chart_counts = [
+            grade_counts[grade] for grade in grade_chart_labels
+        ]
+
+        total_sent = len(entries)
+        total_tries = sum(
+            int(entry.get("tries", 0))
+            for entry in entries
+        )
+
+        official_grades = [
+            entry["boulder"].get("grade")
+            for entry in entries
+            if entry["boulder"].get("grade") in grade_order
+        ]
+
+        best_grade = (
+            max(official_grades, key=lambda grade: grade_order[grade])
+            if official_grades
+            else None
+        )
+
+        stats = {
+            "total_sent": total_sent,
+            "total_tries": total_tries,
+            "best_grade": best_grade,
+            "average_tries": (
+                round(total_tries / total_sent, 1)
+                if total_sent
+                else None
+            ),
+            "recent_sends": sorted(
+                entries,
+                key=lambda entry: entry.get("completed_at", ""),
+                reverse=True,
+            )[:5],
+            "grade_chart_labels": grade_chart_labels,
+            "grade_chart_counts": grade_chart_counts,
+        }
+
+    return render_template("index.html", stats=stats)
+
 
 
 @main_bp.route("/boulders")
 @login_required
 def boulder_list():
     boulders = [
-        boulder for boulder in get_all()
+        boulder
+        for boulder in get_all()
         if boulder.get("active", True)
     ]
+
+    boulders.sort(
+        key=lambda boulder: boulder.get("created_at", ""),
+        reverse=True,
+    )
 
     return render_template(
         "boulders/list.html",
@@ -45,7 +147,15 @@ def boulder_list():
 def boulder_detail(boulder_id):
     boulder = get_by_id(boulder_id)
 
-    if not boulder or not boulder.get("active", True):
+    my_ascent = None
+
+    if current_user.is_authenticated:
+        my_ascent = get_for_user_and_boulder(
+            current_user.get_id(),
+            boulder_id,
+        )
+
+    if not boulder:
         abort(404)
 
     # to log ascents
@@ -59,9 +169,13 @@ def boulder_detail(boulder_id):
             is not None
         )
 
+    # to get users personal grade
+    
+
     return render_template(
         "boulders/detail.html",
         boulder=boulder,
+        my_ascent=my_ascent,
         has_logged_ascent=has_logged_ascent,
     )
 
@@ -140,25 +254,37 @@ def create_boulder():
     if not form.is_submitted():
         form.setter.data = current_user.display_name
 
+
     if form.validate_on_submit():
 
-        # Picture validation
-        if form.validate_on_submit():
-            if not form.photo.data:
-                form.photo.errors.append("Please select a photo.")
-                return render_template(
-                    "boulders/create.html",
-                    form=form,
-                )
+        # Get the picture from the camera input, if provided.
+        camera_photo = request.files.get("photo_camera")
 
-            try:
-                photo_path = save_boulder_photo(form.photo.data)
-            except ValueError as error:
-                form.photo.errors.append(str(error))
-                return render_template(
-                    "boulders/create.html",
-                    form=form,
-                )
+        # Prefer the camera picture; otherwise use the uploaded picture.
+        if camera_photo and camera_photo.filename:
+            photo_upload = camera_photo
+        else:
+            photo_upload = form.photo.data
+
+        # Picture validation
+        if not photo_upload or not photo_upload.filename:
+            form.photo.errors.append(
+                "Please upload a picture or take one with your camera."
+            )
+            return render_template(
+                "boulders/create.html",
+                form=form,
+            )
+
+        try:
+            photo_path = save_boulder_photo(photo_upload)
+        except ValueError as error:
+            form.photo.errors.append(str(error))
+            return render_template(
+                "boulders/create.html",
+                form=form,
+            )
+
 
             
         now = datetime.now(timezone.utc).isoformat()

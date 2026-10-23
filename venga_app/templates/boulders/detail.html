@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}{{ boulder.name }} | Venga{% endblock %}
@@ -50,13 +51,27 @@
                 </span>
             </div>
 
+            {% if not boulder.get("active", true) %}
+                <div class="alert alert-warning d-flex align-items-center gap-2" role="status">
+                    <i class="bi bi-archive" aria-hidden="true"></i>
+                    <div>
+                        <strong>Archived boulder</strong>
+                        <div class="small">
+                            This boulder is not currently in the active boulder list.
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
             <hr class="my-4">
 
             <!-- Boulder information -->
             <div class="row g-4 mb-4">
                 <div class="col-sm-6">
                     <div class="bg-light rounded-3 p-3 h-100">
-                        <div class="text-muted small mb-2">Grade</div>
+                        <div class="text-muted small mb-2">
+                            Official grade
+                        </div>
                         <div class="fs-5 fw-semibold">
                             {{ boulder.grade }}
                         </div>
@@ -65,7 +80,9 @@
 
                 <div class="col-sm-6">
                     <div class="bg-light rounded-3 p-3 h-100">
-                        <div class="text-muted small mb-2">Hold color</div>
+                        <div class="text-muted small mb-2">
+                            Hold color
+                        </div>
 
                         <div class="d-flex align-items-center gap-2 fs-5 fw-semibold">
                             {% if boulder.color in color_classes %}
@@ -80,6 +97,83 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Climber's personal ascent information -->
+            <div class="mb-4">
+                <h2 class="h5 fw-bold mb-3">Your ascent</h2>
+
+                {% if current_user.is_authenticated and my_ascent %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="text-muted small mb-1">
+                                    Your grade
+                                </div>
+                                <div class="fs-4 fw-bold text-success">
+                                    {{ my_ascent.personal_grade }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="text-muted small mb-1">
+                                    Tries to send
+                                </div>
+                                <div class="fs-4 fw-bold">
+                                    {{ my_ascent.tries }}
+                                    {{ "try" if my_ascent.tries == 1 else "tries" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if boulder.get("active", true) %}
+                        <a
+                            href="{{ url_for(
+                                'logbook.log_ascent',
+                                boulder_id=boulder.id
+                            ) }}"
+                            class="btn btn-outline-success btn-sm mt-3"
+                        >
+                            Edit my ascent
+                        </a>
+                    {% endif %}
+
+                {% elif current_user.is_authenticated %}
+                    {% if boulder.get("active", true) %}
+                        <p class="text-muted mb-3">
+                            Have you sent this boulder? Record your personal
+                            grade and how many tries it took.
+                        </p>
+
+                        <a
+                            href="{{ url_for(
+                                'logbook.log_ascent',
+                                boulder_id=boulder.id
+                            ) }}"
+                            class="btn btn-success"
+                        >
+                            Log ascent
+                        </a>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            This boulder is archived. You can't log a new ascent
+                            until it is restored.
+                        </p>
+                    {% endif %}
+
+                {% else %}
+                    {% if boulder.get("active", true) %}
+                        <p class="text-muted mb-0">
+                            <a href="{{ url_for('auth.login') }}">Log in</a>
+                            to record your personal grade and tries.
+                        </p>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <hr class="my-4">
 
             <!-- Boulder photo -->
             {% if boulder.photo %}
@@ -106,60 +200,178 @@
                 </div>
             {% endif %}
 
-            <!-- Actions -->
+            <!-- Setter and admin actions -->
             {% if current_user.can_set_boulders %}
-                <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
-                    <a
-                        href="{{ url_for(
-                            'main.edit_boulder',
-                            boulder_id=boulder.id
-                        ) }}"
-                        class="btn btn-success"
-                    >
-                        <span aria-hidden="true">&#9998;</span>
-                        Edit boulder
-                    </a>
-
-                    {% if boulder.photo %}
+                {% if boulder.get("active", true) %}
+                    <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
                         <a
                             href="{{ url_for(
-                                'main.mark_holds',
-                                boulder_id=boulder.id,
-                                return_to='detail'
+                                'main.edit_boulder',
+                                boulder_id=boulder.id
                             ) }}"
-                            class="btn btn-outline-success"
+                            class="btn btn-success"
                         >
-                            Mark holds
+                            <span aria-hidden="true">&#9998;</span>
+                            Edit boulder
                         </a>
-                        <a
-                            href="{{ url_for('static', filename=boulder.photo) }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="btn btn-outline-secondary"
+
+                        {% if boulder.photo %}
+                            <a
+                                href="{{ url_for(
+                                    'main.mark_holds',
+                                    boulder_id=boulder.id,
+                                    return_to='detail'
+                                ) }}"
+                                class="btn btn-outline-success"
+                            >
+                                Mark holds
+                            </a>
+
+                            <a
+                                href="{{ url_for('static', filename=boulder.photo) }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-outline-secondary"
+                            >
+                                View full photo
+                            </a>
+                            
+                        {% endif %}
+                        <form
+                            id="archive-boulder-form"
+                            class="d-inline"
+                            onsubmit="return confirmArchiveBoulder(event);"
                         >
-                            View full photo
-                        </a>
-                        
-                    {% endif %}
-                </div>
-            {% endif %}
-            <a
-                href="{{ url_for('logbook.log_ascent', boulder_id=boulder.id) }}"
-                class="btn btn-success"
-            >
-                {% if current_user.is_authenticated %}
-                    {% if has_logged_ascent %}
-                        Edit my ascent
-                    {% else %}
-                        Log ascent
-                    {% endif %}
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            >
+
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-archive me-1" aria-hidden="true"></i>
+                                Archive Boulder
+                            </button>
+                        </form>
+                    </div>
                 {% else %}
-                    Log ascent
+                    <button
+                        type="button"
+                        id="restore-boulder-button"
+                        class="btn btn-success"
+                    >
+                        <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
+                        Restore Boulder
+                    </button>
                 {% endif %}
-            </a>
+            {% endif %}
 
         </div>
     </div>
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+async function confirmArchiveBoulder(event) {
+    event.preventDefault();
+
+    const confirmed = window.confirm(
+        "Are you sure you want to archive this boulder? " +
+        "It will be removed from the active boulder list."
+    );
+
+    if (!confirmed) {
+        return false;
+    }
+
+    const form = document.getElementById("archive-boulder-form");
+    const button = form.querySelector('button[type="submit"]');
+
+    button.disabled = true;
+    button.textContent = "Archiving...";
+
+    try {
+        const response = await fetch(
+            {{ url_for('boulder.delete_boulder', boulder_id=boulder.id) | tojson }},
+            {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": form.querySelector(
+                        'input[name="csrf_token"]'
+                    ).value
+                }
+            }
+        );
+
+        if (!response.ok) {
+            const result = await response.json().catch(() => ({}));
+            throw new Error(
+                result.error || "Could not archive this boulder."
+            );
+        }
+
+        window.location.href = {{ url_for('main.boulder_list') | tojson }};
+
+    } catch (error) {
+        window.alert(error.message);
+        button.disabled = false;
+        button.innerHTML =
+            '<i class="bi bi-archive me-1" aria-hidden="true"></i> Archive Boulder';
+    }
+
+    return false;
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const restoreButton = document.getElementById("restore-boulder-button");
+
+    if (!restoreButton) {
+        return;
+    }
+
+    restoreButton.addEventListener("click", async function () {
+        const confirmed = window.confirm(
+            "Restore this boulder? It will become visible in the active boulder list again."
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        restoreButton.disabled = true;
+        restoreButton.textContent = "Restoring...";
+
+        try {
+            const response = await fetch(
+                {{ url_for('boulder.restore_boulder', boulder_id=boulder.id) | tojson }},
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": {{ csrf_token() | tojson }}
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                const result = await response.json().catch(() => ({}));
+                throw new Error(result.error || "Could not restore this boulder.");
+            }
+
+            window.location.reload();
+
+        } catch (error) {
+            window.alert(error.message);
+            restoreButton.disabled = false;
+            restoreButton.innerHTML =
+                '<i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i> Restore Boulder';
+        }
+    });
+});
+</script>
 {% endblock %}

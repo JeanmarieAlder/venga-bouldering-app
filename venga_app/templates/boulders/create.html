@@ -56,6 +56,26 @@
         select.addEventListener("change", updatePreview);
         updatePreview();
     });
+
+    // to see which picture is selected before submitting form
+    const uploadInput = document.getElementById("photo");
+    const cameraInput = document.getElementById("photo-camera");
+    const selectionText = document.getElementById("photo-selection");
+
+    function showSelectedPhoto(input) {
+        if (input.files && input.files.length > 0) {
+            selectionText.textContent =
+                "Selected: " + input.files[0].name;
+        }
+    }
+
+    uploadInput.addEventListener("change", function () {
+        showSelectedPhoto(uploadInput);
+    });
+
+    cameraInput.addEventListener("change", function () {
+        showSelectedPhoto(cameraInput);
+    });
     </script>
 
     <div>
@@ -67,13 +87,39 @@
         {% endfor %}
     </div>
 
-    <div>
-        {{ form.photo.label }}
-        {{ form.photo(accept="image/jpeg,image/png,image/webp") }}
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Boulder picture (optional)</label>
 
-        {% for error in form.photo.errors %}
-            <p class="error">{{ error }}</p>
-        {% endfor %}
+        <div class="d-flex flex-wrap gap-2">
+            <label for="photo" class="btn btn-outline-primary mb-0">
+                <i class="bi bi-upload me-1" aria-hidden="true"></i>
+                Upload picture
+            </label>
+
+            <label for="photo-camera" class="btn btn-outline-success mb-0">
+                <i class="bi bi-camera me-1" aria-hidden="true"></i>
+                Take picture
+            </label>
+        </div>
+
+        {{ form.photo(
+            id="photo",
+            class="visually-hidden",
+            accept="image/*"
+        ) }}
+
+        <input
+            type="file"
+            id="photo-camera"
+            name="photo_camera"
+            accept="image/*"
+            capture="environment"
+            class="visually-hidden"
+        >
+
+        <div id="photo-selection" class="form-text mt-2">
+            Choose an existing picture or take a new one. Both are optional.
+        </div>
     </div>
 
     {{ form.submit() }}

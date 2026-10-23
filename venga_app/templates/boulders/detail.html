@@ -86,12 +86,23 @@
                 <div class="mt-4">
                     <h2 class="h5 fw-bold mb-3">Wall photo</h2>
 
-                    <img
-                        src="{{ url_for('static', filename=boulder.photo) }}"
-                        alt="Photo of {{ boulder.name }}"
-                        class="boulder-photo img-fluid rounded-3 shadow-sm"
-                        style="display: block; width: 100%; max-height: 650px; object-fit: contain; background: #f8f9fa;"
-                    >
+                    <div class="boulder-photo-container">
+                        <img
+                            src="{{ url_for('static', filename=boulder.photo) }}"
+                            alt="Photo of {{ boulder.name }} with marked holds"
+                            class="boulder-detail-photo"
+                        >
+
+                        {% for hold in boulder.get("holds", []) %}
+                            {% set hold_type = hold.get("type", "regular") %}
+
+                            <span
+                                class="boulder-hold-marker boulder-hold-marker--{{ hold_type }}"
+                                style="left: {{ hold.x * 100 }}%; top: {{ hold.y * 100 }}%;"
+                                aria-hidden="true"
+                            ></span>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
 
@@ -111,6 +122,16 @@
 
                     {% if boulder.photo %}
                         <a
+                            href="{{ url_for(
+                                'main.mark_holds',
+                                boulder_id=boulder.id,
+                                return_to='detail'
+                            ) }}"
+                            class="btn btn-outline-success"
+                        >
+                            Mark holds
+                        </a>
+                        <a
                             href="{{ url_for('static', filename=boulder.photo) }}"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -118,6 +139,7 @@
                         >
                             View full photo
                         </a>
+                        
                     {% endif %}
                 </div>
             {% endif %}

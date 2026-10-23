@@ -244,3 +244,78 @@ form input[type="reset"]:disabled {
     outline: 2px solid currentColor;
     outline-offset: 2px;
 }
+
+
+/* Boulder photo with visible hold markers */
+.boulder-photo-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 0;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: #f8f9fa;
+}
+
+.boulder-detail-photo {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 650px;
+    object-fit: contain;
+    border-radius: 0.75rem;
+}
+
+/* Transparent, double-outline hold markers */
+.boulder-hold-marker {
+    position: absolute;
+
+    /* Scale with the displayed photo */
+    width: 4.5%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    box-sizing: border-box;
+
+    transform: translate(-50%, -50%);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    /* Transparent center: the climbing hold remains visible */
+    background: transparent;
+
+    /* Dark inner edge and subtle shadow for contrast */
+    box-shadow:
+        inset 0 0 0 2px #000000,
+        0 1px 4px rgba(0, 0, 0, 0.75);
+
+    pointer-events: none;
+}
+
+
+/* Starting and finishing hold markers */
+.boulder-hold-marker--start,
+.boulder-hold-marker--finish {
+    display: block;
+    background: transparent;
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+}
+
+/* Starting holds: green inner outline */
+.boulder-hold-marker--start {
+    box-shadow:
+        inset 0 0 0 2px #198754,
+        0 0 0 2px #ffffff,
+        0 1px 5px rgba(0, 0, 0, 0.65);
+    border-color: #198754;
+}
+
+/* Finishing holds: red inner outline */
+.boulder-hold-marker--finish {
+    box-shadow:
+        inset 0 0 0 2px #dc3545,
+        0 0 0 2px #ffffff,
+        0 1px 5px rgba(0, 0, 0, 0.65);
+    border-color: #dc3545;
+}

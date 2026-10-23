@@ -1,4 +1,5 @@
 import uuid
+import json
 from datetime import datetime, timezone
 
 from flask import (
@@ -6,6 +7,7 @@ from flask import (
     flash,
     redirect,
     render_template,
+    request,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -176,4 +178,112 @@ def create_boulder():
     return render_template(
         "boulders/create.html",
         form=form,
+    )
+
+
+@main_bp.route("/boulders/<boulder_id>/holds", methods=["GET", "POST"])
+@login_required
+@setter_required
+def mark_holds(boulder_id):
+    boulders = get_all()
+
+    boulder = next(
+        (
+            item for item in boulders
+            if item.get("id") == boulder_id
+        ),
+        None,
+    )
+
+    if boulder is None:
+        abort(404)
+
+    if not boulder.get("photo"):
+        flash("Upload a photo before marking holds.", "error")
+        return redirect(
+            url_for("main.edit_boulder", boulder_id=boulder_id)
+        )
+
+    return_to = request.values.get("return_to", "edit")
+
+    # Only allow known destinations.
+    if return_to not in ("edit", "detail"):
+        return_to = "edit"
+
+    if request.method == "POST":
+        
+        try:
+            holds = json.loads(request.form.get("holds_json", "[]"))
+
+            if not isinstance(holds, list) or len(holds) > 500:
+                raise ValueError("Invalid number of holds.")
+
+            clean_holds = []
+            type_counts = {"start": 0, "finish": 0}
+
+            for hold in holds:
+                if not isinstance(hold, dict):
+                    raise ValueError("Invalid hold.")
+
+                x = hold.get("x")
+                y = hold.get("y")
+                hold_type = hold.get("type", "regular")
+
+                if (
+                    isinstance(x, bool)
+                    or isinstance(y, bool)
+                    or not isinstance(x, (int, float))
+                    or not isinstance(y, (int, float))
+                    or not 0 <= x <= 1
+                    or not 0 <= y <= 1
+                ):
+                    raise ValueError("Invalid hold position.")
+
+                if hold_type not in ("regular", "start", "finish"):
+                    raise ValueError("Invalid hold type.")
+
+                if hold_type in type_counts:
+                    type_counts[hold_type] += 1
+
+                    if type_counts[hold_type] > 2:
+                        raise ValueError(
+                            "A boulder can have at most two "
+                            "starting holds and two finishing holds."
+                        )
+
+                clean_holds.append({
+                    "x": float(x),
+                    "y": float(y),
+                    "type": hold_type,
+                })
+
+        except (ValueError, TypeError, json.JSONDecodeError):
+            flash("Could not save the hold positions. Check the hold types and limits.", "error")
+            return redirect(
+                url_for(
+                    "main.mark_holds",
+                    boulder_id=boulder_id,
+                    return_to=return_to,
+                )
+            )
+
+
+        boulder["holds"] = clean_holds
+        save_all(boulders)
+
+        flash("Hold positions saved successfully.", "success")
+
+        if return_to == "detail":
+            return redirect(
+                url_for("main.boulder_detail", boulder_id=boulder_id)
+            )
+
+        return redirect(
+            url_for("main.edit_boulder", boulder_id=boulder_id)
+        )
+
+    return render_template(
+        "boulders/mark_holds.html",
+        boulder=boulder,
+        return_to=return_to,
     )

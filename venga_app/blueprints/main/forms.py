@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length
+from flask_babel import lazy_gettext as _l
 
 
 GRADE_CHOICES = [
@@ -19,42 +20,42 @@ GRADE_CHOICES = [
 
 # Keep this list short and easy to scan.
 COLOR_CHOICES = [
-    ("Red", "Red"),
-    ("Blue", "Blue"),
-    ("Yellow", "Yellow"),
-    ("Green", "Green"),
-    ("Orange", "Orange"),
-    ("Purple", "Purple"),
-    ("Pink", "Pink"),
-    ("Black", "Black"),
+    ("Red", _l("Red")),
+    ("Blue", _l("Blue")),
+    ("Yellow", _l("Yellow")),
+    ("Green", _l("Green")),
+    ("Orange", _l("Orange")),
+    ("Purple", _l("Purple")),
+    ("Pink", _l("Pink")),
+    ("Black", _l("Black")),
 ]
 
 
 class BoulderEditForm(FlaskForm):
     name = StringField(
-        "Name",
+        _l("Name"),
         filters=[lambda value: value.strip() if isinstance(value, str) else value],
         validators=[DataRequired(), Length(max=100)],
     )
 
     grade = SelectField(
-        "Grade",
+        _l("Grade"),
         choices=GRADE_CHOICES,
         validators=[DataRequired()],
     )
 
     color = SelectField(
-        "Hold color",
+        _l("Hold color"),
         choices=COLOR_CHOICES,
         validators=[DataRequired()],
     )
 
     setter = StringField(
-        "Setter",
+        _l("Setter"),
         filters=[lambda value: value.strip() if isinstance(value, str) else value],
         validators=[DataRequired(), Length(max=80)],
     )
 
-    photo = FileField("Boulder photo")
+    photo = FileField(_l("Boulder photo"))
 
-    submit = SubmitField("Save changes")
+    submit = SubmitField(_l("Save changes"))

@@ -1,0 +1,315 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Venga 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: venga_app/templates/base.html
+
+msgid "Toggle navigation"
+msgstr "Afficher ou masquer la navigation"
+
+msgid "Hi, %(name)s"
+msgstr "Bonjour, %(name)s"
+
+msgid "Boulders"
+msgstr "Blocs"
+
+msgid "Logbook"
+msgstr "Logbook"
+
+msgid "Manage users"
+msgstr "Gérer les utilisateurs"
+
+msgid "Log out"
+msgstr "Se déconnecter"
+
+msgid "Log in"
+msgstr "Se connecter"
+
+msgid "Register"
+msgstr "S'inscrire"
+
+msgid "Language"
+msgstr "Langue"
+
+msgid "Choose language"
+msgstr "Choisir la langue"
+
+msgid "Dismiss alert"
+msgstr "Fermer le message"
+
+# index.html
+
+msgid "Venga | Your climbing dashboard"
+msgstr "Venga | Votre tableau de bord d'escalade"
+
+msgid "Your climbing journey"
+msgstr "Votre aventure en escalade"
+
+msgid "Keep climbing, %(name)s!"
+msgstr "Continuez à grimper, %(name)s !"
+
+msgid "Find your next send."
+msgstr "Trouvez votre prochain bloc à enchaîner."
+
+msgid "Track your sends, challenge yourself, and see your progress one boulder at a time."
+msgstr "Suivez vos blocs enchaînés, relevez de nouveaux défis et mesurez vos progrès, bloc après bloc."
+
+msgid "Explore boulders"
+msgstr "Explorer les blocs"
+
+msgid "Log in"
+msgstr "Se connecter"
+
+msgid "Create account"
+msgstr "Créer un compte"
+
+msgid "Your progress"
+msgstr "Votre progression"
+
+msgid "A snapshot of your climbing achievements."
+msgstr "Un aperçu de vos réussites en escalade."
+
+msgid "Boulders sent"
+msgstr "Blocs enchaînés"
+
+msgid "Unique sends logged"
+msgstr "Blocs distincts enregistrés"
+
+msgid "Best official grade"
+msgstr "Meilleure cotation officielle"
+
+msgid "Hardest setter-assigned grade you've sent"
+msgstr "Cotation officielle la plus difficile que vous ayez réussie"
+
+msgid "Total tries"
+msgstr "Nombre total d'essais"
+
+msgid "Across logged sends"
+msgstr "Pour l'ensemble des blocs enregistrés"
+
+msgid "Average tries"
+msgstr "Nombre moyen d'essais"
+
+msgid "Per logged send"
+msgstr "Par bloc enchaîné"
+
+msgid "Sends by official grade"
+msgstr "Blocs enchaînés par cotation officielle"
+
+msgid "Number of unique boulders you've sent at each setter-assigned grade."
+msgstr "Nombre de blocs distincts réussis pour chaque cotation officielle attribuée par l'ouvreur."
+
+msgid "Bar chart showing the number of boulders sent at each official grade."
+msgstr "Diagramme en barres indiquant le nombre de blocs enchaînés pour chaque cotation officielle."
+
+msgid "Log your first ascent to see your grade distribution here."
+msgstr "Enregistrez votre première réussite pour voir ici la répartition de vos cotations."
+
+msgid "Recent sends"
+msgstr "Blocs récemment enchaînés"
+
+msgid "Your latest logged boulders."
+msgstr "Vos derniers blocs enregistrés."
+
+msgid "View logbook"
+msgstr "Voir le Logbook"
+
+msgid "Boulder"
+msgstr "Bloc"
+
+msgid "Your grade"
+msgstr "Votre cotation"
+
+msgid "Tries"
+msgstr "Essais"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Official grade:"
+msgstr "Cotation officielle :"
+
+msgid "%(num)d try"
+msgid_plural "%(num)d tries"
+msgstr[0] "%(num)d essai"
+msgstr[1] "%(num)d essais"
+
+msgid "Your first send is waiting"
+msgstr "Votre premier bloc vous attend"
+
+msgid "Browse the available boulders and log your first successful ascent to start building your stats."
+msgstr "Parcourez les blocs disponibles et enregistrez votre première réussite pour commencer à suivre vos statistiques."
+
+msgid "Find a boulder"
+msgstr "Trouver un bloc"
+
+msgid "Setter tools"
+msgstr "Outils d'ouverture"
+
+msgid "Manage boulders and keep the wall up to date."
+msgstr "Gérez les blocs et maintenez le mur à jour."
+
+msgid "Add a boulder"
+msgstr "Ajouter un bloc"
+
+msgid "Track your sends"
+msgstr "Suivez vos réussites"
+
+msgid "Keep a personal record of completed boulders, tries, and grades."
+msgstr "Conservez un historique personnel des blocs réussis, de vos essais et de vos cotations."
+
+msgid "See your progress"
+msgstr "Suivez votre progression"
+
+msgid "Build your logbook and discover how your climbing develops."
+msgstr "Complétez votre Logbook et découvrez comment vous progressez en escalade."
+
+msgid "Find your next challenge"
+msgstr "Trouvez votre prochain défi"
+
+msgid "Explore the available routes and pick your next project."
+msgstr "Explorez les voies disponibles et choisissez votre prochain projet."
+
+msgid "New to Venga?"
+msgstr "Nouveau sur Venga ?"
+
+msgid "Create an account"
+msgstr "Créer un compte"
+
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+msgid "Display name"
+msgstr "Nom affiché"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Confirm password"
+msgstr "Confirmer le mot de passe"
+
+msgid "Passwords must match."
+msgstr "Les mots de passe doivent correspondre."
+
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+msgid "Grade"
+msgstr "Cotation"
+
+msgid "Color"
+msgstr "Couleur"
+
+msgid "Setter"
+msgstr "Ouvreur"
+
+msgid "No active boulders"
+msgstr "Aucun bloc actif"
+
+msgid "There are no active boulders at the moment."
+msgstr "Il n'y a aucun bloc actif pour le moment."
+
+msgid "Show archived boulders"
+msgstr "Afficher les blocs archivés"
+
+msgid "Hide archived boulders"
+msgstr "Masquer les blocs archivés"
+
+msgid "Archived boulders"
+msgstr "Blocs archivés"
+
+msgid "Loading archived boulders..."
+msgstr "Chargement des blocs archivés..."
+
+msgid "There are no archived boulders."
+msgstr "Il n'y a aucun bloc archivé."
+
+msgid "Could not load archived boulders."
+msgstr "Impossible de charger les blocs archivés."
+
+msgid "Red"
+msgstr "Rouge"
+
+msgid "Blue"
+msgstr "Bleu"
+
+msgid "Yellow"
+msgstr "Jaune"
+
+msgid "Green"
+msgstr "Vert"
+
+msgid "Orange"
+msgstr "Orange"
+
+msgid "Purple"
+msgstr "Violet"
+
+msgid "Pink"
+msgstr "Rose"
+
+msgid "Black"
+msgstr "Noir"
+
+
+msgid "Enter the details of the new boulder below."
+msgstr "Saisissez les détails du nouveau bloc ci-dessous."
+
+msgid "e.g. The Blue Corner"
+msgstr "p. ex. Le coin bleu"
+
+msgid "e.g. 6A+"
+msgstr "p. ex. 6A+"
+
+msgid "Selected hold color"
+msgstr "Couleur de la prise sélectionnée"
+
+msgid "Selected: "
+msgstr "Sélectionné : "
+
+msgid "Boulder picture (optional)"
+msgstr "Photo du bloc (facultatif)"
+
+msgid "Upload picture"
+msgstr "Importer une photo"
+
+msgid "Take picture"
+msgstr "Prendre une photo"
+
+msgid "Choose an existing picture or take a new one. Both are optional."
+msgstr "Choisissez une photo existante ou prenez-en une nouvelle. Les deux options sont facultatives."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Hold color"
+msgstr "Couleur des prises"
+
+msgid "Boulder photo"
+msgstr "Photo du bloc"
+
+msgid "Save changes"
+msgstr "Enregistrer les modifications"
+
+
+msgid "Username already exists."
+msgstr "Ce nom d'utilisateur existe déjà."
+
+msgid "Your account has been created. You can log in now."
+msgstr "Votre compte a été créé. Vous pouvez maintenant vous connecter."
+
+msgid "Invalid username or password."
+msgstr "Nom d'utilisateur ou mot de passe invalide."
+
+msgid "You have been logged out."
+msgstr "Vous avez été déconnecté."

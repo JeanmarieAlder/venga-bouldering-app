@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_babel import lazy_gettext as _l
 from wtforms import (
     BooleanField,
     PasswordField,
@@ -14,7 +15,7 @@ from wtforms.validators import (
 
 class RegistrationForm(FlaskForm):
     username = StringField(
-        "Username",
+        _l("Username"),
         validators=[
             DataRequired(),
             Length(min=3, max=30),
@@ -22,7 +23,7 @@ class RegistrationForm(FlaskForm):
     )
 
     display_name = StringField(
-        "Display name",
+        _l("Display name"),
         validators=[
             DataRequired(),
             Length(max=80),
@@ -30,7 +31,7 @@ class RegistrationForm(FlaskForm):
     )
 
     password = PasswordField(
-        "Password",
+        _l("Password"),
         validators=[
             DataRequired(),
             Length(min=8, max=128),
@@ -38,27 +39,27 @@ class RegistrationForm(FlaskForm):
     )
 
     confirm_password = PasswordField(
-        "Confirm password",
+        _l("Confirm password"),
         validators=[
             DataRequired(),
-            EqualTo("password", message="Passwords must match."),
+            EqualTo("password", message=_l("Passwords must match.")),
         ],
     )
 
-    submit = SubmitField("Create account")
+    submit = SubmitField(_l("Create account"))
 
 
 class LoginForm(FlaskForm):
     username = StringField(
-        "Username",
+        _l("Username"),
         validators=[DataRequired()],
     )
 
     password = PasswordField(
-        "Password",
+        _l("Password"),
         validators=[DataRequired()],
     )
 
-    remember_me = BooleanField("Remember me")
+    remember_me = BooleanField(_l("Remember me"))
 
-    submit = SubmitField("Log in")
+    submit = SubmitField(_l("Log in"))

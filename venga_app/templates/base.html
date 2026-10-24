@@ -12,13 +12,11 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
-    
+
     <title>{% block title %}Venga{% endblock %}</title>
 </head>
 <body>
     <header>
-
-        
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
@@ -32,7 +30,7 @@
                     data-bs-target="#mainNavbar"
                     aria-controls="mainNavbar"
                     aria-expanded="false"
-                    aria-label="Toggle navigation"
+                    aria-label="{{ _('Toggle navigation') }}"
                 >
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -40,42 +38,96 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if current_user.is_authenticated %}
-                            <span>Hi, {{ current_user.display_name }}</span>
+                            <span>
+                                {{ _('Hi, %(name)s', name=current_user.display_name) }}
+                            </span>
 
                             <a class="nav-link" href="{{ url_for('main.boulder_list') }}">
-                                Boulders
+                                {{ _('Boulders') }}
                             </a>
 
-                            <a
-                                class="nav-link"
-                                href="{{ url_for('logbook.logbook') }}"
-                            >
-                                My logbook
+                            <a class="nav-link" href="{{ url_for('logbook.logbook') }}">
+                                {{ _('Logbook') }}
                             </a>
 
-                            {% if current_user.is_authenticated and current_user.is_admin %}
+                            {% if current_user.is_admin %}
                                 <a class="nav-link" href="{{ url_for('admin.users') }}">
-                                    Manage users
+                                    {{ _('Manage users') }}
                                 </a>
                             {% endif %}
 
-                            <form class="nav-link" method="POST"
+                            <form
+                                class="nav-link"
+                                method="POST"
                                 action="{{ url_for('auth.logout') }}"
-                                style="display: inline">
-                                <input type="hidden"
+                                style="display: inline"
+                            >
+                                <input
+                                    type="hidden"
                                     name="csrf_token"
-                                    value="{{ csrf_token() }}">
-                                <button type="submit">Log out</button>
+                                    value="{{ csrf_token() }}"
+                                >
+                                <button type="submit">{{ _('Log out') }}</button>
                             </form>
                         {% else %}
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Log in</a>
-                            <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">
+                                {{ _('Log in') }}
+                            </a>
+                            <a class="nav-link" href="{{ url_for('auth.register') }}">
+                                {{ _('Register') }}
+                            </a>
                         {% endif %}
                     </ul>
+
+                    <!-- Language selector -->
+                    <form
+                        method="POST"
+                        action="{{ url_for('main.set_language') }}"
+                        class="d-flex align-items-center gap-2 pb-2 pb-lg-0"
+                    >
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="next"
+                            value="{{ request.full_path }}"
+                        >
+
+                        <label
+                            for="language-select"
+                            class="text-white small mb-0"
+                        >
+                            {{ _('Language') }}
+                        </label>
+
+                        <select
+                            id="language-select"
+                            name="language"
+                            class="form-select form-select-sm"
+                            style="width: auto;"
+                            onchange="this.form.requestSubmit()"
+                            aria-label="{{ _('Choose language') }}"
+                        >
+                            <option
+                                value="en"
+                                {% if session.get('language', 'en') == 'en' %}selected{% endif %}
+                            >
+                                English
+                            </option>
+                            <option
+                                value="fr"
+                                {% if session.get('language', 'en') == 'fr' %}selected{% endif %}
+                            >
+                                Français
+                            </option>
+                        </select>
+                    </form>
                 </div>
             </div>
-        </nav>
-            
         </nav>
     </header>
 
@@ -118,7 +170,7 @@
                             type="button"
                             class="btn-close"
                             data-bs-dismiss="alert"
-                            aria-label="Dismiss alert"
+                            aria-label="{{ _('Dismiss alert') }}"
                         ></button>
                     </div>
 
@@ -126,8 +178,9 @@
             {% endwith %}
         </div>
 
-            {% block content %}{% endblock %}
+        {% block content %}{% endblock %}
     </main>
+
     <!-- Bootstrap 5.3 JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 

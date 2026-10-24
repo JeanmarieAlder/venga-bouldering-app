@@ -1,7 +1,6 @@
-
 {% extends "base.html" %}
 
-{% block title %}Venga | Your climbing dashboard{% endblock %}
+{% block title %}{{ _('Venga | Your climbing dashboard') }}{% endblock %}
 
 {% block content %}
 <div class="container py-4 py-md-5">
@@ -9,41 +8,40 @@
     <!-- Welcome section -->
     <div class="p-4 p-md-5 mb-4 rounded-4 bg-success text-white shadow-sm">
         <p class="text-uppercase fw-semibold small mb-2">
-            Your climbing journey
+            {{ _('Your climbing journey') }}
         </p>
 
         <h1 class="display-5 fw-bold mb-3">
             {% if current_user.is_authenticated %}
-                Keep climbing, {{ current_user.display_name }}!
+                {{ _('Keep climbing, %(name)s!', name=current_user.display_name) }}
             {% else %}
-                Find your next send.
+                {{ _('Find your next send.') }}
             {% endif %}
         </h1>
 
         <p class="lead mb-4">
-            Track your sends, challenge yourself, and see your progress
-            one boulder at a time.
+            {{ _('Track your sends, challenge yourself, and see your progress one boulder at a time.') }}
         </p>
 
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ url_for('main.boulder_list') }}"
                class="btn btn-light btn-lg">
-                Explore boulders
+                {{ _('Explore boulders') }}
             </a>
 
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('logbook.logbook') }}"
                    class="btn btn-outline-light btn-lg">
-                    My logbook
+                    {{ _('Logbook') }}
                 </a>
             {% else %}
                 <a href="{{ url_for('auth.login') }}"
                    class="btn btn-outline-light btn-lg">
-                    Log in
+                    {{ _('Log in') }}
                 </a>
                 <a href="{{ url_for('auth.register') }}"
                    class="btn btn-outline-light btn-lg">
-                    Create account
+                    {{ _('Create account') }}
                 </a>
             {% endif %}
         </div>
@@ -54,9 +52,9 @@
         <!-- Personal statistics -->
         <div class="d-flex justify-content-between align-items-end mb-3">
             <div>
-                <h2 class="h4 fw-bold mb-1">Your progress</h2>
+                <h2 class="h4 fw-bold mb-1">{{ _('Your progress') }}</h2>
                 <p class="text-secondary mb-0">
-                    A snapshot of your climbing achievements.
+                    {{ _('A snapshot of your climbing achievements.') }}
                 </p>
             </div>
         </div>
@@ -67,13 +65,13 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body p-3 p-md-4">
                         <div class="text-secondary small mb-2">
-                            Boulders sent
+                            {{ _('Boulders sent') }}
                         </div>
                         <div class="display-6 fw-bold text-success">
                             {{ stats.total_sent }}
                         </div>
                         <div class="small text-secondary mt-2">
-                            Unique sends logged
+                            {{ _('Unique sends logged') }}
                         </div>
                     </div>
                 </div>
@@ -83,13 +81,13 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body p-3 p-md-4">
                         <div class="text-secondary small mb-2">
-                            Best official grade
+                            {{ _('Best official grade') }}
                         </div>
                         <div class="display-6 fw-bold">
                             {{ stats.best_grade or "—" }}
                         </div>
                         <div class="small text-secondary mt-2">
-                            Hardest setter-assigned grade you've sent
+                            {{ _("Hardest setter-assigned grade you've sent") }}
                         </div>
                     </div>
                 </div>
@@ -99,13 +97,13 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body p-3 p-md-4">
                         <div class="text-secondary small mb-2">
-                            Total tries
+                            {{ _('Total tries') }}
                         </div>
                         <div class="display-6 fw-bold">
                             {{ stats.total_tries }}
                         </div>
                         <div class="small text-secondary mt-2">
-                            Across logged sends
+                            {{ _('Across logged sends') }}
                         </div>
                     </div>
                 </div>
@@ -115,7 +113,7 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body p-3 p-md-4">
                         <div class="text-secondary small mb-2">
-                            Average tries
+                            {{ _('Average tries') }}
                         </div>
                         <div class="display-6 fw-bold">
                             {% if stats.average_tries is not none %}
@@ -125,7 +123,7 @@
                             {% endif %}
                         </div>
                         <div class="small text-secondary mt-2">
-                            Per logged send
+                            {{ _('Per logged send') }}
                         </div>
                     </div>
                 </div>
@@ -137,10 +135,10 @@
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body p-4">
                 <h2 class="h5 fw-bold mb-1">
-                    Sends by official grade
+                    {{ _('Sends by official grade') }}
                 </h2>
                 <p class="text-secondary small mb-4">
-                    Number of unique boulders you've sent at each setter-assigned grade.
+                    {{ _("Number of unique boulders you've sent at each setter-assigned grade.") }}
                 </p>
 
                 {% if stats.grade_chart_labels %}
@@ -148,12 +146,12 @@
                         <canvas
                             id="gradeChart"
                             role="img"
-                            aria-label="Bar chart showing the number of boulders sent at each official grade."
+                            aria-label="{{ _('Bar chart showing the number of boulders sent at each official grade.') }}"
                         ></canvas>
                     </div>
                 {% else %}
                     <p class="text-secondary mb-0">
-                        Log your first ascent to see your grade distribution here.
+                        {{ _('Log your first ascent to see your grade distribution here.') }}
                     </p>
                 {% endif %}
             </div>
@@ -162,15 +160,15 @@
         <!-- Recent sends -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h2 class="h4 fw-bold mb-1">Recent sends</h2>
+                <h2 class="h4 fw-bold mb-1">{{ _('Recent sends') }}</h2>
                 <p class="text-secondary mb-0">
-                    Your latest logged boulders.
+                    {{ _('Your latest logged boulders.') }}
                 </p>
             </div>
 
             <a href="{{ url_for('logbook.logbook') }}"
                class="btn btn-outline-success btn-sm">
-                View logbook
+                {{ _('View logbook') }}
             </a>
         </div>
 
@@ -180,10 +178,10 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">Boulder</th>
-                                <th scope="col">Your grade</th>
-                                <th scope="col">Tries</th>
-                                <th scope="col">Date</th>
+                                <th scope="col">{{ _('Boulder') }}</th>
+                                <th scope="col">{{ _('Your grade') }}</th>
+                                <th scope="col">{{ _('Tries') }}</th>
+                                <th scope="col">{{ _('Date') }}</th>
                             </tr>
                         </thead>
 
@@ -201,7 +199,7 @@
                                             {{ entry.boulder.name }}
                                         </a>
                                         <div class="small text-secondary">
-                                            Official grade:
+                                            {{ _('Official grade:') }}
                                             {{ entry.boulder.grade }}
                                         </div>
                                     </td>
@@ -213,8 +211,7 @@
                                     </td>
 
                                     <td>
-                                        {{ entry.tries }}
-                                        {{ "try" if entry.tries == 1 else "tries" }}
+                                        {{ ngettext('%(num)d try', '%(num)d tries', entry.tries, num=entry.tries) }}
                                     </td>
 
                                     <td class="text-secondary small">
@@ -235,15 +232,14 @@
                         🧗
                     </div>
                     <h3 class="h5 fw-bold">
-                        Your first send is waiting
+                        {{ _('Your first send is waiting') }}
                     </h3>
                     <p class="text-secondary mb-4">
-                        Browse the available boulders and log your first
-                        successful ascent to start building your stats.
+                        {{ _('Browse the available boulders and log your first successful ascent to start building your stats.') }}
                     </p>
                     <a href="{{ url_for('main.boulder_list') }}"
                        class="btn btn-success">
-                        Find a boulder
+                        {{ _('Find a boulder') }}
                     </a>
                 </div>
             </div>
@@ -253,14 +249,14 @@
             <div class="alert alert-light border d-flex flex-wrap
                         justify-content-between align-items-center gap-3">
                 <div>
-                    <strong>Setter tools</strong>
+                    <strong>{{ _('Setter tools') }}</strong>
                     <div class="small text-secondary">
-                        Manage boulders and keep the wall up to date.
+                        {{ _('Manage boulders and keep the wall up to date.') }}
                     </div>
                 </div>
                 <a href="{{ url_for('main.create_boulder') }}"
                    class="btn btn-outline-success">
-                    Add a boulder
+                    {{ _('Add a boulder') }}
                 </a>
             </div>
         {% endif %}
@@ -272,10 +268,9 @@
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
-                        <h2 class="h5 fw-bold">Track your sends</h2>
+                        <h2 class="h5 fw-bold">{{ _('Track your sends') }}</h2>
                         <p class="text-secondary mb-0">
-                            Keep a personal record of completed boulders,
-                            tries, and grades.
+                            {{ _('Keep a personal record of completed boulders, tries, and grades.') }}
                         </p>
                     </div>
                 </div>
@@ -284,10 +279,9 @@
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
-                        <h2 class="h5 fw-bold">See your progress</h2>
+                        <h2 class="h5 fw-bold">{{ _('See your progress') }}</h2>
                         <p class="text-secondary mb-0">
-                            Build your logbook and discover how your
-                            climbing develops.
+                            {{ _('Build your logbook and discover how your climbing develops.') }}
                         </p>
                     </div>
                 </div>
@@ -296,10 +290,9 @@
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
-                        <h2 class="h5 fw-bold">Find your next challenge</h2>
+                        <h2 class="h5 fw-bold">{{ _('Find your next challenge') }}</h2>
                         <p class="text-secondary mb-0">
-                            Explore the available routes and pick your
-                            next project.
+                            {{ _('Explore the available routes and pick your next project.') }}
                         </p>
                     </div>
                 </div>

@@ -1,3 +1,4 @@
+
 from urllib.parse import urlsplit
 
 from flask import (
@@ -13,6 +14,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from flask_babel import gettext as _
 
 from venga_app.user_store import create_user, get_by_username
 from . import auth_bp
@@ -47,7 +49,7 @@ def register():
         username = form.username.data.strip()
         display_name = form.display_name.data.strip()
         if get_by_username(form.username.data):
-            form.username.errors.append("Username already exists.")
+            form.username.errors.append(_("Username already exists."))
         else:
             create_user(
                 username=username,
@@ -55,7 +57,10 @@ def register():
                 password=form.password.data,
             )
 
-            flash("Your account has been created. You can log in now.", "success")
+            flash(
+                _("Your account has been created. You can log in now."),
+                "success",
+            )
             return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html", form=form)
@@ -73,7 +78,7 @@ def login():
         user = get_by_username(username)
 
         if user is None or not user.check_password(form.password.data):
-            flash("Invalid username or password.", "error")
+            flash(_("Invalid username or password."), "error")
         else:
             login_user(user, remember=form.remember_me.data)
             target = request.args.get("next")
@@ -90,5 +95,5 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash("You have been logged out.", "success")
+    flash(_("You have been logged out."), "success")
     return redirect(url_for("main.index"))

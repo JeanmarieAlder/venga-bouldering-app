@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Boulders | Venga{% endblock %}
+{% block title %}{{ _('Boulders') }} | Venga{% endblock %}
 
 {% block content %}
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-        <h1 class="mb-0">Boulders</h1>
+        <h1 class="mb-0">{{ _('Boulders') }}</h1>
 
         {% if current_user.can_set_boulders %}
             <a
                 href="{{ url_for('main.create_boulder') }}"
                 class="btn btn-success"
             >
-                + Add a boulder
+                + {{ _('Add a boulder') }}
             </a>
         {% endif %}
     </div>
@@ -34,10 +34,10 @@
             <table class="table table-striped table-hover align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">Boulder</th>
-                        <th scope="col">Grade</th>
-                        <th scope="col">Color</th>
-                        <th scope="col">Setter</th>
+                        <th scope="col">{{ _('Boulder') }}</th>
+                        <th scope="col">{{ _('Grade') }}</th>
+                        <th scope="col">{{ _('Color') }}</th>
+                        <th scope="col">{{ _('Setter') }}</th>
                     </tr>
                 </thead>
 
@@ -70,7 +70,7 @@
                                         aria-hidden="true"
                                     ></span>
                                 {% endif %}
-                                {{ boulder.color }}
+                                {{ _(boulder.color) }}
                             </span>
                         </td>
 
@@ -82,9 +82,9 @@
         </div>
     {% else %}
         <div class="alert alert-light border text-center py-4" role="status">
-            <h2 class="h5">No active boulders</h2>
+            <h2 class="h5">{{ _('No active boulders') }}</h2>
             <p class="mb-0">
-                There are no active boulders at the moment.
+                {{ _('There are no active boulders at the moment.') }}
             </p>
         </div>
     {% endif %}
@@ -99,32 +99,32 @@
             aria-controls="archived-section"
         >
             <i class="bi bi-archive me-1" aria-hidden="true"></i>
-            Show archived boulders
+            {{ _('Show archived boulders') }}
         </button>
     </div>
 
     <!-- Archived boulders section, hidden initially -->
     <div id="archived-section" class="mt-4" hidden>
-        <h2 class="h4 mb-3">Archived boulders</h2>
+        <h2 class="h4 mb-3">{{ _('Archived boulders') }}</h2>
 
         <div id="archived-loading" class="text-secondary" hidden>
-            Loading archived boulders...
+            {{ _('Loading archived boulders...') }}
         </div>
 
         <div id="archived-error" class="alert alert-danger" role="alert" hidden></div>
 
         <div id="archived-empty" class="alert alert-light border" hidden>
-            There are no archived boulders.
+            {{ _('There are no archived boulders.') }}
         </div>
 
         <div id="archived-table-wrapper" class="table-responsive" hidden>
             <table class="table table-striped table-hover align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">Boulder</th>
-                        <th scope="col">Grade</th>
-                        <th scope="col">Color</th>
-                        <th scope="col">Setter</th>
+                        <th scope="col">{{ _('Boulder') }}</th>
+                        <th scope="col">{{ _('Grade') }}</th>
+                        <th scope="col">{{ _('Color') }}</th>
+                        <th scope="col">{{ _('Setter') }}</th>
                     </tr>
                 </thead>
                 <tbody id="archived-boulders-body"></tbody>
@@ -148,6 +148,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const tableWrapper = document.getElementById("archived-table-wrapper");
     const tableBody = document.getElementById("archived-boulders-body");
 
+    const translations = {
+        showArchived: {{ _('Show archived boulders') | tojson }},
+        hideArchived: {{ _('Hide archived boulders') | tojson }},
+        loadError: {{ _('Could not load archived boulders.') | tojson }}
+    };
+
+    const colorLabels = {{ {
+        "Red": _("Red"),
+        "Blue": _("Blue"),
+        "Yellow": _("Yellow"),
+        "Green": _("Green"),
+        "Orange": _("Orange"),
+        "Purple": _("Purple"),
+        "Pink": _("Pink"),
+        "Black": _("Black")
+    } | tojson }};
+
     let loaded = false;
 
     toggleButton.addEventListener("click", async function () {
@@ -155,9 +172,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         archivedSection.hidden = !isOpening;
         toggleButton.setAttribute("aria-expanded", String(isOpening));
+
         toggleButton.innerHTML = isOpening
-            ? '<i class="bi bi-archive me-1" aria-hidden="true"></i> Hide archived boulders'
-            : '<i class="bi bi-archive me-1" aria-hidden="true"></i> Show archived boulders';
+            ? '<i class="bi bi-archive me-1" aria-hidden="true"></i> '
+                + translations.hideArchived
+            : '<i class="bi bi-archive me-1" aria-hidden="true"></i> '
+                + translations.showArchived;
 
         if (!isOpening || loaded) {
             return;
@@ -172,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             if (!response.ok) {
-                throw new Error("Could not load archived boulders.");
+                throw new Error(translations.loadError);
             }
 
             const data = await response.json();
@@ -208,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 gradeCell.appendChild(gradeBadge);
 
                 const colorCell = document.createElement("td");
-                colorCell.textContent = boulder.color || "";
+                colorCell.textContent = colorLabels[boulder.color] || boulder.color || "";
 
                 const setterCell = document.createElement("td");
                 setterCell.textContent = boulder.setter || "";

@@ -9,6 +9,7 @@ from flask import (
     render_template,
     request,
     url_for,
+    session,
 )
 from flask_login import current_user, login_required
 
@@ -426,3 +427,19 @@ def mark_holds(boulder_id):
         boulder=boulder,
         return_to=return_to,
     )
+
+
+@main_bp.route("/set-language", methods=["POST"])
+def set_language():
+    supported_languages = ["en", "fr"]
+    language = request.form.get("language", "en")
+
+    if language in supported_languages:
+        session["language"] = language
+
+    # Return to the page the user was viewing.
+    next_url = request.form.get("next", "")
+    if next_url.startswith("/") and not next_url.startswith("//"):
+        return redirect(next_url)
+
+    return redirect(url_for("main.index"))

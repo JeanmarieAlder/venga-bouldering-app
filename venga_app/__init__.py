@@ -1,7 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, request
 
-from venga_app.extensions import csrf, login_manager
+from venga_app.extensions import csrf, login_manager, babel
 
+
+def select_locale():
+    supported_languages = ["en", "fr"]
+
+    language = session.get("language")
+
+    if language in supported_languages:
+        return language
+
+    return request.accept_languages.best_match(supported_languages) or "en"
 
 def create_app():
     app = Flask(__name__)
@@ -13,6 +23,9 @@ def create_app():
 
     login_manager.init_app(app)
     csrf.init_app(app)
+
+    app.config["BABEL_TRANSLATION_DIRECTORIES"] = "../translations"
+    babel.init_app(app, locale_selector=select_locale)
 
     from flask_wtf.csrf import CSRFError
 

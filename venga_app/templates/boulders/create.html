@@ -2,16 +2,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Add a boulder</h1>
+<h1>{{ _('Add a boulder') }}</h1>
 
-<p>Enter the details of the new boulder below.</p>
+<p>{{ _('Enter the details of the new boulder below.') }}</p>
 
 <form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
 
     <div>
         {{ form.name.label }}
-        {{ form.name(placeholder="e.g. The Blue Corner") }}
+        {{ form.name(placeholder=_("e.g. The Blue Corner")) }}
 
         {% for error in form.name.errors %}
             <p class="error">{{ error }}</p>
@@ -20,7 +20,7 @@
 
     <div>
         {{ form.grade.label }}
-        {{ form.grade(placeholder="e.g. 6A+") }}
+        {{ form.grade(placeholder=_("e.g. 6A+")) }}
 
         {% for error in form.grade.errors %}
             <p class="error">{{ error }}</p>
@@ -34,7 +34,7 @@
         <span
             id="color-preview"
             class="color-swatch"
-            aria-label="Selected hold color"
+            aria-label="{{ _('Selected hold color') }}"
         ></span>
 
         {% for error in form.color.errors %}
@@ -65,7 +65,7 @@
     function showSelectedPhoto(input) {
         if (input.files && input.files.length > 0) {
             selectionText.textContent =
-                "Selected: " + input.files[0].name;
+                {{ _('Selected: ') | tojson }} + input.files[0].name;
         }
     }
 
@@ -88,17 +88,17 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-semibold">Boulder picture (optional)</label>
+        <label class="form-label fw-semibold">{{ _('Boulder picture (optional)') }}</label>
 
         <div class="d-flex flex-wrap gap-2">
             <label for="photo" class="btn btn-outline-primary mb-0">
                 <i class="bi bi-upload me-1" aria-hidden="true"></i>
-                Upload picture
+                {{ _('Upload picture') }}
             </label>
 
             <label for="photo-camera" class="btn btn-outline-success mb-0">
                 <i class="bi bi-camera me-1" aria-hidden="true"></i>
-                Take picture
+                {{ _('Take picture') }}
             </label>
         </div>
 
@@ -118,14 +118,14 @@
         >
 
         <div id="photo-selection" class="form-text mt-2">
-            Choose an existing picture or take a new one. Both are optional.
+            {{ _('Choose an existing picture or take a new one. Both are optional.') }}
         </div>
     </div>
 
     {{ form.submit() }}
 
     <a href="{{ url_for('main.boulder_list') }}">
-        Cancel
+        {{ _('Cancel') }}
     </a>
 </form>
 {% endblock %}

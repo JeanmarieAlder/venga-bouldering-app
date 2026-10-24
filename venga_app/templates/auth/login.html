@@ -1,10 +1,9 @@
-
 {% extends "base.html" %}
 
-{% block title %}Log in | Venga{% endblock %}
+{% block title %}{{ _('Log in') }} | Venga{% endblock %}
 
 {% block content %}
-<h1>Log in</h1>
+<h1>{{ _('Log in') }}</h1>
 
 <form method="POST">
     {{ form.hidden_tag() }}
@@ -33,7 +32,7 @@
     {{ form.submit() }}
 </form>
 
-<p>New to Venga?
-    <a href="{{ url_for('auth.register') }}">Create an account</a>
+<p>{{ _('New to Venga?') }}
+    <a href="{{ url_for('auth.register') }}">{{ _('Create an account') }}</a>
 </p>
 {% endblock %}
